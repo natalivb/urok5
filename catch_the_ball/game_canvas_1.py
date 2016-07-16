@@ -11,11 +11,6 @@ def init_main_window():
     canvas.pack()
     ent = Entry(root,width=20,bd=3,bg="lightyellow")   
     ent.pack()
-   
-    
-    
-    
-
   
 
 def mouse_click(event):
@@ -31,9 +26,7 @@ a = 0
 
 if __name__ == "__main__":
     init_main_window()
-    
     canvas.bind('<Button-1>',mouse_click)
-   
     root.mainloop()
 
  
