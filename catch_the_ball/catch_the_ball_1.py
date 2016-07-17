@@ -2,13 +2,21 @@ from tkinter import *
  
 
 def init_main_window():
-    global root, canvas, lab4,  scores
+    global root, canvas, lab4,  scores, but, but1
 
     root = Tk()
     root.title("Поймай мяч")
     root["bg"] = "#a8f192"
-    fra1 = Frame(root,width=400,height=100,bg="#a8f192")
-
+    fra1 = Frame(root,width=400,height=150,bg="#a8f192")
+    but = Button(fra1,text="создать шарики",   
+                  width=15, height=1,
+                  font="Arial 10",
+                  bg="#fdf63e") 
+    but1 = Button(fra1,text="очистить холст",   
+                  width=15, height=1,
+                  font="Arial 10",
+                  bg="#fdf63e")
+    
     lab = Label(fra1,text="минимальный радиус шарика от  10  до 20: ",
                 font="Arial 10", bg="#a8f192")
     ent = Entry(fra1,width=20,bd=3,bg="lightyellow")
@@ -22,7 +30,8 @@ def init_main_window():
     ent.grid(row=0,column=4)
     lab1.grid(row=1,column=0, columnspan=3)
     ent1.grid(row=1,column=4)
-        
+    but.grid(row=2,column=4)
+    but1.grid(row=3,column=4)
     lab3 = Label(fra1,text="Ваши баллы: ", font="Arial 18", bg="#a8f192")
     lab3.grid(row=5,column=0,columnspan=1)
     lab4 = Label(fra1, text=scores, font="Arial 18", bg="#a8f192")
@@ -62,7 +71,11 @@ def click_ball(event):
         # считаем баллы по удаленному объекту
         create_random_ball()
 
-
+def click_but1(event):
+    """ очищает холст
+    """
+    canvas.delete('all')
+    lab4['text']=0
 def move_all_balls(event):
     """ передвигает все шарики на чуть-чуть
     """
@@ -89,7 +102,7 @@ def random_color():
     return choice(ball_available_colors)
 
 
-def init_ball_catch_game():
+def init_ball_catch_game(event):
     """
     Создаём необходимое для игры количество шариков, по которым нужно будет кликать.
     """
@@ -101,8 +114,8 @@ def init_ball_catch_game():
 scores = 0
 if __name__ == "__main__":
     init_main_window()
-    init_ball_catch_game()
-
-
+    
+    but.bind('<Button-1>', init_ball_catch_game)
+    but1.bind('<Button-1>', click_but1)
 
 root.mainloop() 
