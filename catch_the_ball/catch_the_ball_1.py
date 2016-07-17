@@ -8,7 +8,7 @@ def init_main_window():
     root.title("Поймай мяч")
     root["bg"] = "#a8f192"
     fra1 = Frame(root,width=400,height=150,bg="#a8f192")
-    but = Button(fra1,text="создать шарики",   
+    but = Button(fra1,text="начать игру",   
                   width=15, height=1,
                   font="Arial 10",
                   bg="#fdf63e") 
