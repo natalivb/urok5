@@ -2,7 +2,7 @@ from tkinter import *
  
 
 def init_main_window():
-    global root, canvas, lab4,  scores, but, but1
+    global root, canvas, lab4,  scores, but, but1, but2, ent, ent1
 
     root = Tk()
     root.title("Поймай мяч")
@@ -16,7 +16,10 @@ def init_main_window():
                   width=15, height=1,
                   font="Arial 10",
                   bg="#fdf63e")
-    
+    but2 = Button(fra1,text="ok",   
+                  width=15, height=1,
+                  font="Arial 10",
+                  bg="#fdf63e")
     lab = Label(fra1,text="минимальный радиус шарика от  10  до 20: ",
                 font="Arial 10", bg="#a8f192")
     ent = Entry(fra1,width=20,bd=3,bg="lightyellow")
@@ -30,9 +33,10 @@ def init_main_window():
     ent.grid(row=0,column=4)
     lab1.grid(row=1,column=0, columnspan=3)
     ent1.grid(row=1,column=4)
-    but.grid(row=2,column=4)
-    but1.grid(row=3,column=4)
-    lab3 = Label(fra1,text="Ваши баллы: ", font="Arial 18", bg="#a8f192")
+    but.grid(row=3,column=4)
+    but1.grid(row=3,column=1)
+    but2.grid(row=2,column=4)
+    lab3 = Label(fra1,text="Ваши баллы: ", font="Arial 16", bg="#a8f192")
     lab3.grid(row=5,column=0,columnspan=1)
     lab4 = Label(fra1, text=scores, font="Arial 18", bg="#a8f192")
     lab4.grid(row=5,column=2,columnspan=1)
@@ -50,8 +54,18 @@ def init_main_window():
 from random import choice, randint
 
 ball_initial_number = 20
-ball_minimal_radius = 15
-ball_maximal_radius = 30
+
+def enter_radius(event):
+    global ent, ent1, ball_minimal_radius, ball_maximal_radius
+    """ осуществляется ввод радиусов шариков
+    """
+    ball_minimal_radius = ent.get()
+    ball_minimal_radius = int(ball_minimal_radius)
+    ball_maximal_radius = ent1.get()
+    ball_maximal_radius = int(ball_maximal_radius)
+
+
+
 ball_available_colors = ['#836af1', '#c66af1', '#6aadf1', '#ecf16a', '#ec136a', '#1cf911']
 
 def click_ball(event):
@@ -76,6 +90,8 @@ def click_but1(event):
     """
     canvas.delete('all')
     lab4['text']=0
+    
+
 def move_all_balls(event):
     """ передвигает все шарики на чуть-чуть
     """
@@ -103,9 +119,11 @@ def random_color():
 
 
 def init_ball_catch_game(event):
+    
     """
     Создаём необходимое для игры количество шариков, по которым нужно будет кликать.
     """
+    
     for i in range(ball_initial_number):
         create_random_ball()
 
@@ -117,5 +135,5 @@ if __name__ == "__main__":
     
     but.bind('<Button-1>', init_ball_catch_game)
     but1.bind('<Button-1>', click_but1)
-
+    but2.bind('<Button-1>', enter_radius)
 root.mainloop() 
