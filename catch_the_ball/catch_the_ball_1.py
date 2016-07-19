@@ -51,6 +51,8 @@ def init_main_window():
 from random import choice, randint
 
 ball_initial_number = 20
+balls_coord = []#список координат шариков
+balls_num = []#список номеров шариков
 
 def enter_radius(event):
     """ осуществляется ввод радиусов шариков
@@ -59,7 +61,11 @@ def enter_radius(event):
     ball_minimal_radius = int(ent.get())
     ball_maximal_radius = int(ent1.get())
 
-
+def click_to_clear_the_canvas(event):
+    """ очищает холст
+    """
+    canvas.delete('all')
+    lab4['text']=0
 
 ball_available_colors = ['#836af1', '#c66af1', '#6aadf1', '#ecf16a', '#ec136a', '#1cf911']
 
@@ -69,42 +75,46 @@ def click_ball(event):
     По клику мышкой нужно удалять тот объект, на который мышка указывает.
     А также засчитываеть его в очки пользователя.
     """
-    global scores
+   
+    global label, balls_coord, balls_num, scores
     obj = canvas.find_closest(event.x, event.y)
-    x1, y1, x2, y2 = canvas.coords(obj)
-
-    if x1 <= event.x <= x2 and y1 <= event.y <= y2:
+    num = obj[0]# вытаскиваем номер объекта из кортежа
+    x1, y1, x2, y2 =canvas.coords(obj)
+    if x1 < event.x < x2 and y1 < event.y < y2:
+        index = balls_num.index(num)# определяем индекс элемента списка, где хранится номер объекта
+        balls_num.pop(index)# удаляем элемент списка с номером объекта
+        balls_coord.pop(index)# удаляем элемент списка с координатами объекта
         canvas.delete(obj)
         scores += 1
         lab4['text']=scores
         # считаем баллы по удаленному объекту
         create_random_ball()
 
-def click_to_clear_the_canvas(event):
-    """ очищает холст
-    """
-    canvas.delete('all')
-    lab4['text']=0
-    
+  
 
-def move_all_balls(event):
-    """ передвигает все шарики на чуть-чуть
-    """
-    for obj in canvas.find_all():
-        dx = randint(-3, 3)
-        dy = randint(-3, 3)
-        canvas.move(obj, dx, dy)
+def move_all_balls(event):#Передвигает все шарики
+    global balls_coord
+    for obj in balls_coord:
+        x1, y1, x2, y2 =canvas.coords(obj[0])
+        # проверяем, не выйдет ли шарик за границы холста
+        if x1+obj[1]+obj[3]>=400 or x1+obj[1]<=0:
+            obj[1]=-obj[1] #меняем направление движения
+        if y1+obj[2]+obj[3]>=400 or y1+obj[2]<=0:
+            obj[2]=-obj[2]
+        canvas.move(obj[0],obj[1],obj[2])
 
-def create_random_ball():
-    """
-    создаёт шарик в случайном месте игрового холста canvas,
-     при этом шарик не выходит за границы холста!
-    """
+def create_random_ball(): #Создание шарика в случайном месте игрового поля
+    global balls_coord, balls_num, ball_minimal_radius, ball_maximal_radius
     R = randint(ball_minimal_radius, ball_maximal_radius)
-    x = randint(0, int(canvas['width'])-1-2*R)
-    y = randint(0, int(canvas['height'])-1-2*R)
-    canvas.create_oval(x, y, x+2*R, y+2*R, width=1, fill=random_color())
-
+    x = randint(R,int(canvas['width'])-R)
+    y = randint(R,int(canvas['height'])-R)
+    #рисуем шарик и запоминаем его номер в num_oval
+    num_oval = canvas.create_oval(x, y, x+2*R, y+2*R, width=0, fill=random_color())
+    dx = randint(-3, 3)
+    dy = randint(-3, 3)
+    # запоминаем идентификатор, вектор и радиус движения нового шарика
+    balls_coord.append([num_oval, dx, dy, R])
+    balls_num.append(num_oval)# запоминаем номер нового шарика
 
 def random_color():
     """
