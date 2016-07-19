@@ -1,41 +1,38 @@
 from tkinter import *
- 
+
 
 def init_main_window():
-    global root, canvas, lab4,  scores, but, but1, but2, ent, ent1
-
+    global root, canvas, lab4,  scores, to_start_the_game, to_clear_the_canvas, choose_the_radius, ent, ent1
     root = Tk()
     root.title("Поймай мяч")
     root["bg"] = "#a8f192"
     fra1 = Frame(root,width=400,height=150,bg="#a8f192")
-    but = Button(fra1,text="начать игру",   
-                  width=15, height=1,
-                  font="Arial 10",
-                  bg="#fdf63e") 
-    but1 = Button(fra1,text="очистить холст",   
-                  width=15, height=1,
-                  font="Arial 10",
-                  bg="#fdf63e")
-    but2 = Button(fra1,text="ok",   
+    to_start_the_game = Button(fra1,text="начать игру",   
+                            width=15, height=1,
+                            font="Arial 10",
+                            bg="#fdf63e") 
+    to_clear_the_canvas = Button(fra1,text="очистить холст",   
+                                  width=15, height=1,
+                                  font="Arial 10",
+                                  bg="#fdf63e")
+    choose_the_radius = Button(fra1,text="ok",   
                   width=15, height=1,
                   font="Arial 10",
                   bg="#fdf63e")
     lab = Label(fra1,text="минимальный радиус шарика от  10  до 20: ",
                 font="Arial 10", bg="#a8f192")
-    ent = Entry(fra1,width=20,bd=3,bg="lightyellow")
+    ent = Entry(fra1, width=20, bd=3,bg="lightyellow")
      
     lab1 = Label(fra1,text="максимальный  радиус шарика от 20 до 40: ",
                  font="Arial 10", bg="#a8f192")
-    ent1 = Entry(fra1,width=20,bd=3,bg="lightyellow")
-    
-
+    ent1 = Entry(fra1, width=20,bd=3,bg="lightyellow")
     lab.grid(row=0,column=0,columnspan=3)
     ent.grid(row=0,column=4)
     lab1.grid(row=1,column=0, columnspan=3)
     ent1.grid(row=1,column=4)
-    but.grid(row=3,column=4)
-    but1.grid(row=3,column=1)
-    but2.grid(row=2,column=4)
+    to_start_the_game.grid(row=3,column=4)
+    to_clear_the_canvas.grid(row=3,column=1)
+    choose_the_radius.grid(row=2,column=4)
     lab3 = Label(fra1,text="Ваши баллы: ", font="Arial 16", bg="#a8f192")
     lab3.grid(row=5,column=0,columnspan=1)
     lab4 = Label(fra1, text=scores, font="Arial 18", bg="#a8f192")
@@ -56,25 +53,23 @@ from random import choice, randint
 ball_initial_number = 20
 
 def enter_radius(event):
-    global ent, ent1, ball_minimal_radius, ball_maximal_radius
     """ осуществляется ввод радиусов шариков
     """
-    ball_minimal_radius = ent.get()
-    ball_minimal_radius = int(ball_minimal_radius)
-    ball_maximal_radius = ent1.get()
-    ball_maximal_radius = int(ball_maximal_radius)
+    global ent, ent1, ball_minimal_radius, ball_maximal_radius
+    ball_minimal_radius = int(ent.get())
+    ball_maximal_radius = int(ent1.get())
 
 
 
 ball_available_colors = ['#836af1', '#c66af1', '#6aadf1', '#ecf16a', '#ec136a', '#1cf911']
 
 def click_ball(event):
-    global scores
     """ Обработчик событий мышки для игрового холста canvas
     :param event: событие с координатами клика
     По клику мышкой нужно удалять тот объект, на который мышка указывает.
     А также засчитываеть его в очки пользователя.
     """
+    global scores
     obj = canvas.find_closest(event.x, event.y)
     x1, y1, x2, y2 = canvas.coords(obj)
 
@@ -85,7 +80,7 @@ def click_ball(event):
         # считаем баллы по удаленному объекту
         create_random_ball()
 
-def click_but1(event):
+def click_to_clear_the_canvas(event):
     """ очищает холст
     """
     canvas.delete('all')
@@ -133,7 +128,7 @@ scores = 0
 if __name__ == "__main__":
     init_main_window()
     
-    but.bind('<Button-1>', init_ball_catch_game)
-    but1.bind('<Button-1>', click_but1)
-    but2.bind('<Button-1>', enter_radius)
+    to_start_the_game.bind('<Button-1>', init_ball_catch_game)
+    to_clear_the_canvas.bind('<Button-1>', click_to_clear_the_canvas)
+    choose_the_radius.bind('<Button-1>', enter_radius)
 root.mainloop() 
