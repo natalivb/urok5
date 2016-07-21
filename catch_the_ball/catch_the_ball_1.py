@@ -56,11 +56,20 @@ balls_num = []#список номеров шариков
 
 def enter_radius(event):
     """ осуществляется ввод радиусов шариков
+    если введены некорректные значения радиусов,
+    появляется окно с предупреждением об ошибке
     """
     global ent, ent1, ball_minimal_radius, ball_maximal_radius
     ball_minimal_radius = int(ent.get())
     ball_maximal_radius = int(ent1.get())
-
+    if ball_minimal_radius < 10 or ball_minimal_radius > 20 or ball_maximal_radius < 20 or ball_maximal_radius > 40:
+        input_error = Tk()
+        
+        input_error["bg"] = "red"
+        lab4 = Label(input_error,text="Некорректное значение радиуса!",
+                    font="Arial 10", bg="red")
+        lab4.pack()
+        
 def click_to_clear_the_canvas(event):
     """ очищает холст
     """
@@ -109,7 +118,7 @@ def create_random_ball(): #Создание шарика в случайном �
     x = randint(R,int(canvas['width'])-R)
     y = randint(R,int(canvas['height'])-R)
     #рисуем шарик и запоминаем его номер в num_oval
-    num_oval = canvas.create_oval(x, y, x+2*R, y+2*R, width=0, fill=random_color())
+    num_oval = canvas.create_oval(x, y, x+1.5*R, y+1.5*R, width=0, fill=random_color())
     dx = randint(-3, 3)
     dy = randint(-3, 3)
     # запоминаем идентификатор, вектор и радиус движения нового шарика
@@ -124,11 +133,9 @@ def random_color():
 
 
 def init_ball_catch_game(event):
-    
     """
     Создаём необходимое для игры количество шариков, по которым нужно будет кликать.
     """
-    
     for i in range(ball_initial_number):
         create_random_ball()
 
