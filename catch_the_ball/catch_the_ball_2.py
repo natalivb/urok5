@@ -56,7 +56,7 @@ def init_main_window():
 def the_original_settings():
     """ осуществляется ввод радиусов и кол-ва шариков
     """
-    global input_error, ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
+    global ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
     ball_minimal_radius = int(ent.get())
     ball_maximal_radius = int(ent1.get())
     ball_initial_number = 20
@@ -88,7 +88,7 @@ def enter_radius(event):
     появляется окно с предупреждением об ошибке
     главное окно остается неактивным, пока не  нажата кнопка ok
     """
-    global canvas, lab5, lab4, close_window, input_error, ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
+    global canvas, lab5, lab4, close_window, ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
 
     the_original_settings()
   
@@ -97,7 +97,7 @@ def enter_radius(event):
         showwarning('', 'Некорректное значение радиуса')
         
         
-        input_error.mainloop()
+        
 
         
 
