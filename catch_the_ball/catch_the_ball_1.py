@@ -1,4 +1,8 @@
 from tkinter import *
+from random import choice, randint
+ball_initial_number = 20
+balls_coord = []#список координат шариков
+balls_num = []#список номеров шариков
 
 
 def init_main_window():
@@ -22,7 +26,8 @@ def init_main_window():
     lab = Label(fra1,text="минимальный радиус шарика от  10  до 20: ",
                 font="Arial 10", bg="#a8f192")
     ent = Entry(fra1, width=20, bd=3,bg="lightyellow")
-     
+    
+    
     lab1 = Label(fra1,text="максимальный  радиус шарика от 20 до 40: ",
                  font="Arial 10", bg="#a8f192")
     ent1 = Entry(fra1, width=20,bd=3,bg="lightyellow")
@@ -43,49 +48,83 @@ def init_main_window():
     fra2.pack()
     
     canvas = Canvas(fra2,width=400,height=400,bg="#ccf6e4")
-    canvas.bind("<Button>", click_ball)
+    canvas.bind("<Button-1>", click_ball)
     canvas.bind("<Motion>", move_all_balls)
+    canvas.config(cursor='hand2')
     canvas.pack()
 
+def the_original_settings():
+    """ осуществляется ввод радиусов и кол-ва шариков
+    """
+    global input_error, ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
+    ball_minimal_radius = int(ent.get())
+    ball_maximal_radius = int(ent1.get())
+    ball_initial_number = 20
 
-from random import choice, randint
+    balls_coord = []#список координат шариков
+    balls_num = []#список номеров шариков
+    scores = 0
 
-ball_initial_number = 20
-balls_coord = []#список координат шариков
-balls_num = []#список номеров шариков
+def outgo(event):
+    global input_error, close_window 
+    input_error.destroy()
+    
+    
+def click_to_clear_the_canvas(event):
+    """ очищает холст
+    """
+    global ent, ent1, lab4, canvas
+    canvas.delete('all')
+    lab4['text']=0
+    ent.delete(0,2)
+    ent1.delete(0,2)
+    
+ball_available_colors = ['#836af1', '#c66af1', '#6aadf1', '#ecf16a', '#ec136a', '#1cf911']
+
 
 def enter_radius(event):
     """ осуществляется ввод радиусов шариков
     если введены некорректные значения радиусов,
     появляется окно с предупреждением об ошибке
+    главное окно остается неактивным, пока не  нажата кнопка ok
     """
-    global ent, ent1, ball_minimal_radius, ball_maximal_radius
-    ball_minimal_radius = int(ent.get())
-    ball_maximal_radius = int(ent1.get())
+    global canvas, lab5, lab4, close_window, input_error, ent, ent1, ball_minimal_radius, ball_maximal_radius, lab4, ball_initial_number, balls_coord, balls_num, scores
+
+    the_original_settings()
+  
     if ball_minimal_radius < 10 or ball_minimal_radius > 20 or ball_maximal_radius < 20 or ball_maximal_radius > 40:
+        makemodal = 1
         input_error = Tk()
         
         input_error["bg"] = "red"
-        lab4 = Label(input_error,text="Некорректное значение радиуса!",
-                    font="Arial 10", bg="red")
-        lab4.pack()
+        lab5 = Label(input_error,text="Некорректное значение радиуса!",
+                    font="Arial 10", bg="red").pack()
         
-def click_to_clear_the_canvas(event):
-    """ очищает холст
-    """
-    canvas.delete('all')
-    lab4['text']=0
+       
+        close_window = Button(input_error,text="ввести радиусы",   
+                            width=15, height=1,
+                            font="Arial 10")
+        close_window.pack()
+        close_window.bind("<Button-1>",outgo)
+        close_window.bind("<Button-1>",click_to_clear_the_canvas, '+')
+        if makemodal:
+            input_error.focus_set()
+            input_error.grab_set()
+            input_error.wait_window()
+        
+        input_error.mainloop()
 
-ball_available_colors = ['#836af1', '#c66af1', '#6aadf1', '#ecf16a', '#ec136a', '#1cf911']
+        
+
 
 def click_ball(event):
     """ Обработчик событий мышки для игрового холста canvas
     :param event: событие с координатами клика
     По клику мышкой нужно удалять тот объект, на который мышка указывает.
-    А также засчитываеть его в очки пользователя.
+    А также засчитывает его в очки пользователя.
     """
    
-    global label, balls_coord, balls_num, scores
+    global label, balls_coord, balls_num, scores, lab4
     obj = canvas.find_closest(event.x, event.y)
     num = obj[0]# вытаскиваем номер объекта из кортежа
     x1, y1, x2, y2 =canvas.coords(obj)
@@ -115,10 +154,10 @@ def move_all_balls(event):#Передвигает все шарики
 def create_random_ball(): #Создание шарика в случайном месте игрового поля
     global balls_coord, balls_num, ball_minimal_radius, ball_maximal_radius
     R = randint(ball_minimal_radius, ball_maximal_radius)
-    x = randint(R,int(canvas['width'])-R)
-    y = randint(R,int(canvas['height'])-R)
+    x = randint(0, int(canvas['width'])-1-R)
+    y = randint(0, int(canvas['height'])-1-R)
     #рисуем шарик и запоминаем его номер в num_oval
-    num_oval = canvas.create_oval(x, y, x+1.5*R, y+1.5*R, width=0, fill=random_color())
+    num_oval = canvas.create_oval(x, y, x+2*R, y+2*R, width=1, fill=random_color())
     dx = randint(-3, 3)
     dy = randint(-3, 3)
     # запоминаем идентификатор, вектор и радиус движения нового шарика
@@ -136,8 +175,10 @@ def init_ball_catch_game(event):
     """
     Создаём необходимое для игры количество шариков, по которым нужно будет кликать.
     """
+
     for i in range(ball_initial_number):
         create_random_ball()
+       
 
 
 
@@ -146,6 +187,8 @@ if __name__ == "__main__":
     init_main_window()
     
     to_start_the_game.bind('<Button-1>', init_ball_catch_game)
+    
     to_clear_the_canvas.bind('<Button-1>', click_to_clear_the_canvas)
     choose_the_radius.bind('<Button-1>', enter_radius)
 root.mainloop() 
+
